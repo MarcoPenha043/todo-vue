@@ -1,5 +1,8 @@
 <script setup>
 import { reactive }  from 'vue';
+import Cabecalho from './components/cabecalho.vue';
+import Formulario from './components/Formulario.vue';
+import ListaDeTarefas from './components/ListaDeTarefas.vue';
 
 const estado = reactive({
   filtro: 'todas',
@@ -54,46 +57,9 @@ const cadastrarTarefa = () => {
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light rounded-3">
-      <h1>Minhas tarefas</h1>
-      <p>
-        Você possui {{ getTarefasPendentes().length }} tarefas pendentes
-      </p>
-    </header>
-    <form @submit.prevent="cadastrarTarefa">
-      <div class="row">
-        <div class="col">
-          <input :value="estado.tarefaTemporaria" @change="evento => estado.tarefaTemporaria = evento.target.value" required type="text" placeholder="Digite aqui a descrição da tarefa" class="form-control">
-        </div>
-        <div class="col-md-1">
-          <button class="btn btn-primary">Cadastrar</button>
-        </div>
-        <div class="col-md-2">
-          <select @change="evento => estado.filtro = evento.target.value" class="form-control">
-            <option value="todas">Todas tarefas</option>
-            <option value="pendentes">Pendentes</option>
-            <option value="finalizadas">Finalizadas</option>
-          </select>
-        </div>
-      </div>
-    </form>
-    <ul class="list-group mt-4">
-      <li class="list-group-item" v-for="tarefa in getTarefasFiltradas()" :key="tarefa.titulo"> 
-        <input type="checkbox" 
-          :id="tarefa.titulo" 
-          v-model="tarefa.finalizada" 
-          class="me-2"> 
-        <label :class="{ done: tarefa.finalizada }" 
-          :for="tarefa.titulo">
-          {{ tarefa.titulo }}
-        </label>
-      </li>
-    </ul>
+    <Cabecalho :tarefas-pendentes="getTarefasPendentes().length" />
+    <Formulario :trocar-filtro="evento => estado.filtro = evento.target.value" :tarefa-temporaria="estado.tarefaTemporaria" :edita-tarefa-temporaria="evento => estado.tarefaTemporaria = evento.target.value" :cadastrar-tarefa="cadastrarTarefa"/>
+    <ListaDeTarefas :tarefas="getTarefasFiltradas()"/>
   </div>
 </template>
 
-<style scoped>
-  .done{
-    text-decoration: line-through;
-  }
-</style>
